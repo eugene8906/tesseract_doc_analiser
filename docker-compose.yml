@@ -1,0 +1,39 @@
+services:
+  db:
+    image: postgres:16.4
+    container_name: django_db
+    env_file:
+      - .env-non-dev
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./docker/init_db.sh:/docker-entrypoint-initdb.d/init_db.sh
+    ports:
+      - "5435:5432"
+    networks:
+      - backend
+    command: ["postgres", "-c", "listen_addresses=*", "-c", "max_connections=200", "-c", "shared_buffers=256MB"]
+
+  web:
+    build: .
+    command: ["/app/docker/startup.sh"]
+    volumes:
+      - .:/app
+
+    environment:
+      - FASTAPI_URL=http://file_analyzer_app:8000
+    ports:
+      - "7000:7000"
+    depends_on:
+      - db
+    networks:
+      - backend
+    env_file:
+      - .env-non-dev
+
+networks:
+  backend:
+    external: true
+    driver: bridge
+
+volumes:
+  postgres_data:

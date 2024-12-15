@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Удалить документ</title>
+</head>
+<body>
+    <h1>Удалить документ</h1>
+    {% if user.is_staff or user.is_superuser %}
+        <form method="POST" action="{% url 'delete_doc' %}">
+            {% csrf_token %}
+            <label for="doc_id">Введите ID документа для удаления:</label>
+            <input type="number" id="doc_id" name="doc_id" required>
+            <button type="submit">Удалить</button>
+        </form>
+    {% else %}
+        <p>Вам сюда нельзя!</p>
+    {% endif %}
+</body>
+</html>

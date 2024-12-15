@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Главная страница</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .buttons {
+            margin-bottom: 20px;
+        }
+        .buttons a {
+            padding: 10px 15px;
+            text-decoration: none;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+        .gallery {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .gallery-item {
+            flex: 1 1 calc(33.333% - 15px);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            padding: 10px;
+            text-align: center;
+        }
+        .gallery-item img {
+            max-width: 30%;
+            height: auto;
+        }
+        .action-buttons {
+            margin-top: 10px;
+        }
+        .action-buttons a {
+            padding: 8px 12px;
+            text-decoration: none;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Документы для анализа</h1>
+    <div class="buttons">
+        {% if user.is_authenticated %}
+            <a href="{% url 'profile' %}">Мой профиль</a>
+            <a href="{% url 'logout' %}">Выйти</a>
+            <a href="{% url 'upload' %}">Добавить документ</a>
+            {% if user.is_staff or user.is_superuser %}
+                <a href="{% url 'delete_doc_form' %}" style="background-color: #f44336;">Удалить документ</a>
+            {% endif %}
+        {% else %}
+            <a href="{% url 'login' %}">Войти</a>
+            <a href="{% url 'register' %}">Зарегистрироваться</a>
+            <a href="{% url 'login' %}">Добавить документ</a>
+        {% endif %}
+    </div>
+    <div class="gallery">
+        {% for doc in documents %}
+        <div class="gallery-item">
+            <img src="{{ MEDIA_URL }}{{ doc.file_path }}" alt="Документ {{ doc.fastapi_document_id }}">
+            <p>ID: {{ doc.fastapi_document_id }}</p>
+            <div class="action-buttons">
+                <a href="/analyze/{{ doc.fastapi_document_id }}/">Анализировать</a>
+            </div>
+        </div>
+        {% empty %}
+        <p>Нет доступных документов.</p>
+        {% endfor %}
+    </div>
+</body>
+</html>

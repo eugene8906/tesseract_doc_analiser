@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мой профиль</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .buttons {
+            margin-bottom: 20px;
+        }
+        .buttons a {
+            padding: 10px 15px;
+            text-decoration: none;
+            background-color: #4CAF50;
+            color: white;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+        .buttons a.logout {
+            background-color: #f44336; /* Красная кнопка для выхода */
+        }
+        .documents {
+            margin-top: 20px;
+        }
+        .document-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+        .document-item {
+            width: calc(33.333% - 10px); /* Плитка занимает треть ширины */
+            border: 1px solid #ccc;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            text-align: center;
+        }
+        .document-item img {
+            max-width: 100%;
+            height: auto;
+            margin-bottom: 10px;
+        }
+        .action-buttons form {
+            display: inline-block;
+        }
+        .action-buttons button {
+            padding: 8px 12px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Профиль пользователя</h1>
+    <p><strong>Username:</strong> {{ user.username }}</p>
+    <p><strong>Email:</strong> {{ user.email }}</p>
+
+    <div class="buttons">
+        <a href="{% url 'upload' %}">Добавить документ</a>
+        <a href="{% url 'logout' %}" class="logout">Выйти</a>
+        <a href="{% url 'home' %}">На главную</a>
+    </div>
+
+    <div class="documents">
+        <h2>Ваши документы</h2>
+        {% if documents %}
+            <div class="document-grid">
+                {% for doc in documents %}
+                    <div class="document-item">
+                        <img src="{{ MEDIA_URL }}{{ doc.file_path }}" alt="Документ {{ doc.fastapi_document_id }}">
+                        <p>ID: {{ doc.fastapi_document_id }}</p>
+                        <div class="action-buttons">
+                            <form action="/analyze/{{ doc.fastapi_document_id }}/" method="post">
+                                {% csrf_token %}
+                                <button type="submit">Анализировать</button>
+                            </form>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% else %}
+            <p>У вас нет загруженных документов.</p>
+        {% endif %}
+    </div>
+</body>
+</html>

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <title>Анализ документа</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1 {
+            color: #333;
+        }
+        p.placeholder {
+            color: gray;
+            font-style: italic;
+        }
+        button {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .back-button {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Результат анализа документа</h1>
+
+    {% if result_text %}
+        <h2>Результат анализа</h2>
+        <pre>{{ result_text }}</pre>
+    {% else %}
+        <p class="placeholder">Нажмите на кнопку, чтобы получить результат анализа.</p>
+    {% endif %}
+
+    <form method="GET" action="{% url 'analyze_result' document_id %}">
+        <button type="submit">Получить результат</button>
+    </form>
+
+    <div class="back-button">
+        <a href="{% url 'home' %}">
+            <button type="button">Вернуться на главную</button>
+        </a>
+    </div>
+</body>
+</html>
